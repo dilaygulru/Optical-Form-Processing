@@ -23,11 +23,9 @@ WarpResult PerspectiveCorrector::findAndWarp(const cv::Mat& bgr, bool wantDebug)
     cv::Mat warpedBgr;
     cv::cvtColor(C.warped_gray, warpedBgr, cv::COLOR_GRAY2BGR);
     R.warped = warpedBgr;
-
     R.corners = C.markers_orig;
-
-    int cnt=0; for (auto&p:C.markers_warp) if (p.x>=0) ++cnt;
-    R.ok = (cnt>=3 && !R.warped.empty());
+    R.ok = !R.warped.empty();
+    
     return R;
 }
 
