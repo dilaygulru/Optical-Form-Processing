@@ -1,6 +1,7 @@
 #include <opencv2/opencv.hpp>
 #include "core/PerspectiveCorrector.hpp"
 #include <iostream>
+#include "core/BubbleDetector.hpp"
 
 int main(int argc, char** argv) {
     int camIndex = 0;
@@ -25,6 +26,8 @@ int main(int argc, char** argv) {
     cv::resizeWindow("warped", 600, 850);
 
     cv::Mat lastWarped;
+    std::vector<core::Bubble> bubbles;
+    core::BubbleParams bparams;
 
     while (true) {
         cv::Mat frame;
