@@ -1,5 +1,5 @@
 #include "core/BubbleDetector.hpp"
-#include <algorithm> // std::clamp
+#include <algorithm> 
 
 static cv::Mat toGray(const cv::Mat& img) {
   if (img.channels() == 1) return img.clone();

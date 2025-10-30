@@ -21,7 +21,15 @@ WarpResult PerspectiveCorrector::findAndWarp(const cv::Mat& bgr, bool wantDebug)
     }
 
     cv::Mat warpedBgr;
-    cv::cvtColor(C.warped_gray, warpedBgr, cv::COLOR_GRAY2BGR);
+    cv::Mat enhancedGray; 
+    
+  
+    Ptr<CLAHE> clahe = createCLAHE();
+    clahe->setClipLimit(2.0); 
+    clahe->apply(C.warped_gray, enhancedGray);
+    
+    cv::cvtColor(enhancedGray, warpedBgr, cv::COLOR_GRAY2BGR);
+    
     R.warped = warpedBgr;
     R.corners = C.markers_orig;
     R.ok = !R.warped.empty();
@@ -29,4 +37,4 @@ WarpResult PerspectiveCorrector::findAndWarp(const cv::Mat& bgr, bool wantDebug)
     return R;
 }
 
-} 
+}

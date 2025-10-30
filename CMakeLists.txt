@@ -15,6 +15,7 @@ add_executable(omr
     src/main.cpp
     src/core/CornerFinder.cpp
     src/core/PerspectiveCorrector.cpp
+    src/core/BubbleDetector.cpp   
 )
 
 target_link_libraries(omr ${OpenCV_LIBS})
