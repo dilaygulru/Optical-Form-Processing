@@ -15,13 +15,14 @@ struct CornerResult {
 class CornerFinder {
 public:
     CornerFinder(int outW, int outH) : outW_(outW), outH_(outH) {}
+    
     CornerResult processFrame(const cv::Mat& bgr, bool debug_on) const;
 
 private:
     bool findCornerSquares(const cv::Mat& gray, 
                            std::vector<cv::Point2f>& corners, 
                            cv::Mat* dbg) const;
-
+    
     std::vector<cv::Point2f> orderTLTRBRBL(const std::vector<cv::Point2f>& pts, 
                                            cv::Point2f C) const;
 
@@ -29,4 +30,4 @@ private:
     int outW_, outH_;
 };
 
-} 
+}

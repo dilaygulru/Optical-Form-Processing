@@ -15,7 +15,7 @@ struct WarpResult {
 class PerspectiveCorrector {
 public:
     PerspectiveCorrector(int outW, int outH);
-
+    
     WarpResult findAndWarp(const cv::Mat& bgr, bool wantDebug) const;
 
 private:
@@ -23,4 +23,4 @@ private:
     CornerFinder finder_;
 };
 
-} 
+}
