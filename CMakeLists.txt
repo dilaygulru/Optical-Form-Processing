@@ -9,13 +9,14 @@ find_package(OpenCV REQUIRED)
 include_directories(
     ${OpenCV_INCLUDE_DIRS}
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/include/core
 )
 
 add_executable(omr
     src/main.cpp
     src/core/CornerFinder.cpp
     src/core/PerspectiveCorrector.cpp
-    src/core/BubbleDetector.cpp   
+    src/core/ROIDetector.cpp     
 )
 
 target_link_libraries(omr ${OpenCV_LIBS})

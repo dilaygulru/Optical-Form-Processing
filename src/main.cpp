@@ -1,5 +1,6 @@
 #include <opencv2/opencv.hpp>
 #include "core/PerspectiveCorrector.hpp"
+#include "core/ROIDetector.hpp" 
 #include <iostream>
 
 using namespace cv;
@@ -20,11 +21,14 @@ int main(int argc, char** argv) {
     
     core::PerspectiveCorrector pc(1600, 2200);
     
+    BubbleDetector detector; 
+    
     bool showDebug = true;
     std::cout << "ESC: exit | d: debug toggle | s: save warped\n";
     
     cv::namedWindow("camera", cv::WINDOW_NORMAL);
     cv::namedWindow("warped", cv::WINDOW_NORMAL);
+    cv::namedWindow("OMR Debug", cv::WINDOW_NORMAL); 
     cv::resizeWindow("warped", 600, 850);
     
     cv::Mat lastWarped;
@@ -42,6 +46,13 @@ int main(int argc, char** argv) {
         
         if (R.ok && !R.warped.empty()) {
             lastWarped = R.warped.clone();
+            
+            cv::Mat omrDebug;
+            detector.process(R.warped, omrDebug);
+            
+            if (!omrDebug.empty()) {
+                cv::imshow("OMR Debug", omrDebug);
+            }
         }
         
         if (!lastWarped.empty())
