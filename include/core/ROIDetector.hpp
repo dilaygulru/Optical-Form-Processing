@@ -1,41 +1,70 @@
-#ifndef BUBBLE_DETECTOR_HPP
-#define BUBBLE_DETECTOR_HPP
+#ifndef ROI_DETECTOR_HPP
+#define ROI_DETECTOR_HPP
 
 #include <opencv2/opencv.hpp>
 #include <string>
 #include <vector>
+#include <map>
+#include "BubbleDetector.hpp"
 
-class BubbleDetector {
+class ROIDetector {
 public:
-    // Yeni eklendi: Region'un tipi (GRID veya COLUMN)
     enum RegionType {
         GRID,
         COLUMN
     };
-
-    // her bölüm için ROI tanımlamak için kullanıyoruz
+    
     struct RegionDef {
-        std::string name;      // "TURKCE", "KURUM KODU" vs.
-
-        // Düzeltildi: 'roi' yerine yüzdelik koordinatlar eklendi.
-        float rectPct[4];      // {x, y, w, h} - yüzdelik koordinatlar
-
-        int rows;              // kaç soru / kaç satır
-        int cols;              // kaç seçenek (A,B,C,D,E)
-        RegionType type;       // Yeni eklendi: GRID mi yoksa COLUMN mu
+        std::string name;
+        float rectPct[4];  
+        int rows;
+        int cols;
+        RegionType type;
     };
-
-    // ... (diğer kısımlar aynı) ...
-
-    BubbleDetector(); // ' = default;' kısmı cpp'ye taşındığı için tanımı burada bıraktım.
-    // 'setRegions' metodu .cpp dosyasından kaldırılmıştı, onu da sildim.
-
-    // tek frame üzerinde bütün işaretleri oku
+    
+    struct QuestionDetail {
+        int questionNumber;
+        char markedAnswer;     
+        char correctAnswer;    
+        bool isCorrect;        
+        double fillRatio;      
+    };
+    
+    ROIDetector();
+    
     std::map<std::string, std::string> process(const cv::Mat& warped, cv::Mat& debugOut);
-    // NOT: .cpp dosyasında 'process' kullanıldığı için burayı da process olarak güncelledim.
+    
+    std::map<std::string, std::vector<QuestionDetail>> processWithDetails(
+        const cv::Mat& warped, 
+        cv::Mat& debugOut,
+        const std::map<std::string, std::map<int, char>>& answerKey
+    );
+    
+    void setFillThreshold(double threshold);
+    
+    double getFillThreshold() const { return fillThreshold_; }
+    
+    void setDebugMode(bool enabled);
+    cv::Mat getLastDebugVisualization() const;
 
 private:
     std::vector<RegionDef> regions_;
+    double fillThreshold_;
+    BubbleDetector bubbleDetector_;
+    bool debugMode_;
+    cv::Mat lastDebugVis_;
+    
+    std::vector<QuestionDetail> analyzeGridWithDetails(
+        const cv::Mat& roiGray,
+        int rows,
+        int cols,
+        const std::map<int, char>& correctAnswers,
+        std::vector<BubbleResult>* bubbleResults = nullptr,
+        char firstLabel = 'A'
+    );
+    
+    bool isSubjectRegion(const std::string& name) const;
+    std::string bubblesToAnswerString(const std::vector<BubbleResult>& results) const;
 };
 
-#endif // BUBBLE_DETECTOR_HPP
+#endif 
